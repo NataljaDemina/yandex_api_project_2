@@ -4,6 +4,8 @@ import sender_stand_request
 # Импортируем модуль data, в котором определены данные, необходимые для HTTP-запросов.
 import data
 
+# last usedd user token
+# token = ""
 
 # Возвращаем ключ аутентификации
 def get_user_token():
@@ -31,6 +33,13 @@ def get_kit_body(name):
     print("Kit body:", current_body)
     return current_body
 
+
+def get_kit_body_noname():
+    # копирование словаря с телом запроса из файла data, чтобы не потерять данные в исходном словаре
+    current_body = data.kit_body.copy()
+    data.kit_body.pop("name")
+
+
 # Возвращаем заголовок для создания набора 
 def get_kit_header():
     header_body = data.headers.copy()
@@ -44,7 +53,7 @@ def get_kit_header():
 # Функция для позитивной проверки
 def create_kit_positive_assert(kit_name):
     # В переменную user_body сохраняется обновлённое тело запроса
-    create_kit_response = sender_stand_request.post_new_client_kit(get_kit_body("kit name"), get_kit_header())
+    create_kit_response = sender_stand_request.post_new_client_kit(get_kit_body(kit_name), get_kit_header())
 
     # Проверяется, что код ответа равен 201
     assert create_kit_response.status_code == 201
@@ -53,9 +62,57 @@ def create_kit_positive_assert(kit_name):
     assert create_kit_response.json()["name"] == kit_name
 
     # Проверяем, что такой набор доступен при запросе наборов пользователя
-    
+    # TODO: add code
+
+# Функция для негативной проверки создания набора
+def create_kit_negative_assert(kit_name):
+    # В переменную user_body сохраняется обновлённое тело запроса
+    create_kit_response = sender_stand_request.post_new_client_kit(get_kit_body(kit_name), get_kit_header())
+
+    # Проверяется, что код ответа равен 400
+    assert create_kit_response.status_code == 400
+
+    # Проверка текста в теле ответа в атрибуте "message"
+    assert create_kit_response.json()["message"] == "Не все необходимые параметры были переданы"
+
+# Функция для негативной проверки создания набора (не передает имя набора)
+def create_kit_noname_negative_assert():
+    # В переменную user_body сохраняется обновлённое тело запроса
+    create_kit_response = sender_stand_request.post_new_client_kit("{}", get_kit_header())
+
+    # Проверяется, что код ответа равен 400
+    assert create_kit_response.status_code == 400
+
+    # Проверка текста в теле ответа в атрибуте "message"
+    assert create_kit_response.json()["message"] == "Не все необходимые параметры были переданы"
+
+### ТЕСТЫ
+
+# Тест 1. Допустимое количество символов в поле name(1)
+def test_create_kit_1_letter_in_name_get_success_response():
+    create_kit_positive_assert("a")    
+
+# Тест 2. Допустимое количество символов (511)
+def test_create_kit_511_letter_in_name_get_success_response():
+    create_kit_positive_assert("AbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdAbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabC")
+
+# Тест 3. Количество символов меньше допустимого (0)
+def test_create_kit_0_letter_in_name_negative_response():
+    create_kit_negative_assert("")
+
+# Тест 4. Количество символов больше допустимого (512)
+def test_create_kit_512_letter_in_name_negative_response():
+    create_kit_negative_assert("AbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdAbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcD")
+
+# Тест 10. Параметр не передан в запросе
+def test_Create_kit_noname_negaitve_response():
+    create_kit_noname_negative_assert()
 
 # Проверка функции создания набора
-result = sender_stand_request.post_new_client_kit(get_kit_body("kit name"), get_kit_header())
-print("Create kit status:", result.status_code)
-print(result.json())
+# result = sender_stand_request.post_new_client_kit(get_kit_body("kit name"), get_kit_header())
+# print("Create kit status:", result.status_code)
+# print(result.json())
+
+# result = sender_stand_request.get_user_kits(get_kit_header())
+# print("Get all user kits status:", result.status_code)
+# print(result.json())

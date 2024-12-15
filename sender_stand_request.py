@@ -38,7 +38,7 @@ def get_users_table():
 
 # получение всех наборов пользователя
 def get_user_kits(user_header):
-    return requests.get(configuration.URL_SERVICE + configuration.KITS_PATH)
+    return requests.get(configuration.URL_SERVICE + configuration.KITS_PATH, params=user_header)
 
 # Выводим в консоль HTTP-статус код полученного ответа
 # Например, 200 означает успешный запрос, 404 - не найдено и т.д.

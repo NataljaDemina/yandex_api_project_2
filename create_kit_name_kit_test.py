@@ -104,9 +104,33 @@ def test_create_kit_0_letter_in_name_negative_response():
 def test_create_kit_512_letter_in_name_negative_response():
     create_kit_negative_assert("AbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdAbcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcdabcD")
 
+# Тест 5. Разрешены английские буквы
+def test_create_kit_eng_letter_in_name_get_success_response():
+    create_kit_positive_assert("QWErty") 
+
+# Тест 6. Разрешены русские буквы
+def test_create_kit_rus_letter_in_name_get_success_response():
+    create_kit_positive_assert("Мария") 
+
+# Тест 7. Разрешены спецсимволы
+def test_create_kit_special_character_letter_in_name_get_success_response():
+    create_kit_positive_assert("№%@")
+
+# Тест 8. Разрешены пробелы
+def test_create_kit_special_space_in_name_get_success_response():
+    create_kit_positive_assert("Человек и КО ")
+
+# Тест 9. Разрешеы цифры
+def test_create_kit_numbers_in_name_get_success_response():
+    create_kit_positive_assert("123 ")
+
 # Тест 10. Параметр не передан в запросе
 def test_Create_kit_noname_negaitve_response():
     create_kit_noname_negative_assert()
+
+# Тест 11. Передан другой тип параметра (число)
+def test_create_kit_numbers_letter_in_name_negative_response():
+    create_kit_negative_assert(123)
 
 # Проверка функции создания набора
 # result = sender_stand_request.post_new_client_kit(get_kit_body("kit name"), get_kit_header())

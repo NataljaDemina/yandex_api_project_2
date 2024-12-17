@@ -4,9 +4,6 @@ import sender_stand_request
 # Импортируем модуль data, в котором определены данные, необходимые для HTTP-запросов.
 import data
 
-# last usedd user token
-# token = ""
-
 # Возвращаем ключ аутентификации
 def get_user_token():
     # В переменную user_response сохраняется результат запроса на создание пользователя:
@@ -18,7 +15,6 @@ def get_user_token():
     # Проверяется, что в ответе есть поле authToken и оно не пустое
     assert user_response.json()["authToken"] != ""
     
-    # print("User created. Token: ", user_response.json()["authToken"])
     return user_response.json()["authToken"]
 
 
@@ -30,14 +26,7 @@ def get_kit_body(name):
     # изменение значения в поле name
     current_body["name"] = name
     # возвращается новый словарь с нужным значением firstName
-    print("Kit body:", current_body)
     return current_body
-
-
-def get_kit_body_noname():
-    # копирование словаря с телом запроса из файла data, чтобы не потерять данные в исходном словаре
-    current_body = data.kit_body.copy()
-    data.kit_body.pop("name")
 
 
 # Возвращаем заголовок для создания набора 
@@ -45,9 +34,8 @@ def get_kit_header():
     header_body = data.headers.copy()
     token = get_user_token()
     print("User token:", token)
-    header_body["Authorization"] = "Bearer {" + token + "}"
+    header_body["Authorization"] = "Bearer " + token
 
-    print("Header body:", header_body)
     return header_body
 
 # Функция для позитивной проверки
@@ -60,9 +48,6 @@ def create_kit_positive_assert(kit_name):
 
     # Проверяется, что в ответе есть верное имя набора
     assert create_kit_response.json()["name"] == kit_name
-
-    # Проверяем, что такой набор доступен при запросе наборов пользователя
-    # TODO: add code
 
 # Функция для негативной проверки создания набора
 def create_kit_negative_assert(kit_name):
@@ -78,7 +63,7 @@ def create_kit_negative_assert(kit_name):
 # Функция для негативной проверки создания набора (не передает имя набора)
 def create_kit_noname_negative_assert():
     # В переменную user_body сохраняется обновлённое тело запроса
-    create_kit_response = sender_stand_request.post_new_client_kit("{}", get_kit_header())
+    create_kit_response = sender_stand_request.post_new_client_kit({}, get_kit_header())
 
     # Проверяется, что код ответа равен 400
     assert create_kit_response.status_code == 400
@@ -131,12 +116,4 @@ def test_Create_kit_noname_negaitve_response():
 # Тест 11. Передан другой тип параметра (число)
 def test_create_kit_numbers_letter_in_name_negative_response():
     create_kit_negative_assert(123)
-
-# Проверка функции создания набора
-# result = sender_stand_request.post_new_client_kit(get_kit_body("kit name"), get_kit_header())
-# print("Create kit status:", result.status_code)
-# print(result.json())
-
-# result = sender_stand_request.get_user_kits(get_kit_header())
-# print("Get all user kits status:", result.status_code)
-# print(result.json())
+    

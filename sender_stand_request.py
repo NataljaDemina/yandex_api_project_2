@@ -74,11 +74,3 @@ def post_products_kits(products_ids):
     return requests.post(configuration.URL_SERVICE + configuration.PRODUCTS_KITS_PATH,
                          json=products_ids,  # Тело запроса содержит ID продуктов в формате JSON
                          headers=data.headers)  # Использование заголовков из файла data.py
-
-# Вызов функции с передачей списка ID продуктов из файла data.py
-# response = post_products_kits(data.products_ids)
-
-# Вывод HTTP-статус кода ответа и тела ответа в формате JSON
-# Это позволяет проверить успешность выполнения запроса и посмотреть результаты поиска наборов
-# print(response.status_code)
-# print(response.json()) 
